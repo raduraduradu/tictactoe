@@ -1,11 +1,3 @@
-/*gameboard = [
-['', '', ''],
-['', '', ''],
-['', '', '']
-];
-*/
-
-
 const board = (function () {
   //initialize 3x3 2d array for gameboard
   const grid = [];
