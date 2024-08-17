@@ -63,6 +63,7 @@ const displayController = (function () {
     for(let j = 0; j < 3; j++) {
         htmlBoard[j] = [];
         for(let k = 0; k < 3; k++) {
+            cells[i].id = `cell${i}`;
             htmlBoard[j][k] = cells[i];
             i++;
         }
@@ -84,6 +85,8 @@ playerO = createPlayer('0');
 
 
 const game = (function () {
+    let currentTurn = playerX;
+
     const playRound = (player) => {
 
     }
@@ -91,6 +94,6 @@ const game = (function () {
 
 
 let cells = document.querySelector(".container div");
-cells.forEach((cell) => cell.addEventListener("click", () => {
-  
-});
+for(let i = 0; i < cells.length; i++){
+    cells[i].addEventListener("click", (e) => {game.playRound(game.currentTurn}));
+};
