@@ -26,16 +26,6 @@ const board = (function () {
         return true;
     }
     
-    //checks a pattern of 3 cells based on the coordinates passed as arguments
-    //takes three arrays as arguments, each represents a row-column pair
-    const checkPattern = (cellOne, cellTwo, cellThree) => {
-        if(grid [cellOne[0]] [cellOne[1]] == symbol &&
-            grid [cellTwo[0]] [cellTwo[1]] == symbol &&
-            grid [cellThree[0]] [cellThree[1]] == symbol) {
-                return true;
-        }
-    }
-
     const checkWin = (symbol) => {
         //checks a pattern of 3 cells based on the coordinates passed as arguments
         //takes three arrays as arguments, each represents a row-column pair
