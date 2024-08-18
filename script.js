@@ -1,10 +1,16 @@
+const cells = document.querySelectorAll(".container div");
+
 const board = (function () {
-    //initialize 3x3 2d array for gameboard
+    //initialize 3x3 2d array for gameboard and assign id's to their corresponding html elements
+    //id's will be two digits representing the row and column of their cell
+    let cellIndex = 0;
     const grid = [];
     for(let i = 0; i < 3; i++){
         grid[i] = [];
         for(let j = 0; j < 3; j++){
             grid[i][j] = '';
+            cells[cellIndex].id = `${i}${j}`;
+            cellIndex++;
         }
     }
     const checkDraw = () => {
@@ -19,7 +25,7 @@ const board = (function () {
         //if there are no more empty cells
         return true;
     }
-
+    
     //checks a pattern of 3 cells based on the coordinates passed as arguments
     //takes three arrays as arguments, each represents a row-column pair
     const checkPattern = (cellOne, cellTwo, cellThree) => {
@@ -31,6 +37,16 @@ const board = (function () {
     }
 
     const checkWin = (symbol) => {
+        //checks a pattern of 3 cells based on the coordinates passed as arguments
+        //takes three arrays as arguments, each represents a row-column pair
+        const checkPattern = (cellOne, cellTwo, cellThree) => {
+            if(grid [cellOne[0]] [cellOne[1]] == symbol &&
+                grid [cellTwo[0]] [cellTwo[1]] == symbol &&
+                grid [cellThree[0]] [cellThree[1]] == symbol) {
+                    return true;
+            }
+        }
+
         //diagonals
         if(checkPattern([0,0], [1,1], [2,2]) || checkPattern([2,0], [1,1], [0,2])){
             return true;
@@ -57,24 +73,23 @@ const board = (function () {
 
 
 const displayController = (function () {
-    const cells = document.querySelector(".container div");
-    const htmlBoard = [];
-    let i = 0; //i will be the index used for the cells nodeList, j and k will be used to copy the elements inside a 2d array
-    for(let j = 0; j < 3; j++) {
-        htmlBoard[j] = [];
-        for(let k = 0; k < 3; k++) {
-            cells[i].id = `cell${i}`;
-            htmlBoard[j][k] = cells[i];
-            i++;
+    const updateBoard = () => {
+        for(let i = 0; i < 3; i++) {
+            for(let j = 0; j < 3; j++) {
+                document.getElementById(`${i}${j}`).textContent = board.grid[i][j];
+            }
         }
     }
-    return {htmlBoard}
+    const msgElement = document.querySelector("#message");
+    const message = (str) => {
+        msgElement.textContent = str;
+    }
+    return {updateBoard, message, cells}
 })();
 
 function createPlayer (symbol){
     const add = (row, col) => {
         board.grid[row][col] = symbol;
-        displayController.htmlBoard[row][col].textContent = symbol;
     }
     const getSymbol = () => symbol;
 
@@ -87,13 +102,48 @@ playerO = createPlayer('0');
 const game = (function () {
     let currentTurn = playerX;
 
-    const playRound = (player) => {
-
+    const toggleBtns = () => {
+        for(let i = 0; i < cells.length; i++) {
+            cells[i].classList.toggle("disabled")
+        }
     }
+
+    const playRound = (cell) => {
+        //do nothing if cell is already occupied
+        let cellRow = cell.id[0];
+        let cellCol = cell.id[1];
+
+        if(board.grid[cellRow][cellCol] !== ''){
+            return;
+        }
+        currentTurn.add(cellRow, cellCol);
+
+        if(board.checkWin(currentTurn.getSymbol()) == true) {
+            displayController.message(`player ${currentTurn.getSymbol()} wins!`);
+            toggleBtns();
+        }
+        else if(board.checkDraw() == true){
+            displayController.message("It's a draw!");
+            toggleBtns();
+        };
+        displayController.updateBoard();
+        
+        if(currentTurn == playerX) {
+            currentTurn = playerO;
+        }
+        else {
+            currentTurn = playerX;
+        }
+    }
+    return {playRound}
 })();
 
 
-let cells = document.querySelector(".container div");
 for(let i = 0; i < cells.length; i++){
-    cells[i].addEventListener("click", (e) => {game.playRound(game.currentTurn}));
+    cells[i].addEventListener("click", (e) => {
+        if(cells[i].classList.contains("disabled")) {
+            return;
+        }
+        game.playRound(e.target);
+    });
 };

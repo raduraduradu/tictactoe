@@ -25,13 +25,19 @@ body {
 }
 
 .container div {
-    border: 5px solid var(--color3);
+    border-bottom: 5px solid var(--color3);
     border-radius: 10%;
     background-color: var(--color1);
     color: var(--color4);
+    font-size: 500%;
+
+    cursor: pointer;
 
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 500%;
+}
+
+.container div:hover {
+    filter: brightness(0.8);
 }
