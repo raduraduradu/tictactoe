@@ -74,7 +74,11 @@ const displayController = (function () {
     const message = (str) => {
         msgElement.textContent = str;
     }
-    return {updateBoard, message, cells}
+    currentTurnElement = document.querySelector("#current-turn");
+    updateTurn = (symbol) => {
+        currentTurnElement.textContent = `current turn: ${symbol}`;
+    }
+    return {updateBoard, message, cells, updateTurn}
 })();
 
 function createPlayer (symbol){
@@ -92,17 +96,22 @@ playerO = createPlayer('0');
 const game = (function () {
     let currentTurn = playerX;
 
-    const toggleBtns = () => {
+    const disableBtns = () => {
         for(let i = 0; i < cells.length; i++) {
-            cells[i].classList.toggle("disabled")
+            cells[i].classList.add("disabled")
+        }
+    }
+    const enableBtns = () => {
+        for(let i = 0; i < cells.length; i++) {
+            cells[i].classList.remove("disabled")
         }
     }
 
     const playRound = (cell) => {
-        //do nothing if cell is already occupied
         let cellRow = cell.id[0];
         let cellCol = cell.id[1];
 
+        //do nothing if cell is already occupied
         if(board.grid[cellRow][cellCol] !== ''){
             return;
         }
@@ -110,11 +119,11 @@ const game = (function () {
 
         if(board.checkWin(currentTurn.getSymbol()) == true) {
             displayController.message(`player ${currentTurn.getSymbol()} wins!`);
-            toggleBtns();
+            disableBtns();
         }
         else if(board.checkDraw() == true){
             displayController.message("It's a draw!");
-            toggleBtns();
+            disableBtns();
         };
         displayController.updateBoard();
         
@@ -124,8 +133,9 @@ const game = (function () {
         else {
             currentTurn = playerX;
         }
+        displayController.updateTurn(currentTurn.getSymbol());
     }
-    return {playRound}
+    return {playRound, enableBtns}
 })();
 
 
@@ -137,3 +147,14 @@ for(let i = 0; i < cells.length; i++){
         game.playRound(e.target);
     });
 };
+
+document.querySelector("button#reset").addEventListener("click", () => {
+    for(let i = 0; i < 3; i++){
+        for(let j = 0; j < 3; j++){
+            board.grid[i][j] = '';
+        }
+    }
+    displayController.updateBoard();
+    game.enableBtns();
+    displayController.message('');
+})

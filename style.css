@@ -5,10 +5,17 @@
     --color4:#3C3633;
 }
 
+@font-face {
+  font-family: abril;
+  src: url(./AbrilFatface-Regular.ttf);
+}
+
 body {
+    font-family: abril;
     background-color: var(--color3);
     height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -40,4 +47,22 @@ body {
 
 .container div:hover {
     filter: brightness(0.8);
+}
+
+button {
+    padding: 6px 12px;
+    font-size: 20px;
+    font-family: roboto;
+    font-weight: bold;
+    background-color: var(--color2);
+    border: none;
+    border-bottom: 4px solid var(--color4);
+    cursor: pointer;
+}
+button:hover {
+    filter: brightness(0.8);
+}
+
+#current-turn {
+    font-family: roboto;
 }
